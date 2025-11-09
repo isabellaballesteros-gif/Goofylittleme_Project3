@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body.gallery-page {
+            align-items: flex-start;
+            padding: 20px;
+        }
+        /* Ensure modals don't affect page layout */
+        body.gallery-page .friends-modal,
+        body.gallery-page .friend-requests-modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            margin: 0 !important;
+            padding: 20px !important;
+        }
+    </style>
+</head>
+<body class="gallery-page">
+    <div class="gallery-container">
+        <div class="gallery-header">
+            <h1><img src="https://i.postimg.cc/hvwCDpnd/gallery2.png" alt="Avatar Gallery" class="gallery-header-img"></h1>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div id="notificationsContainer" style="position: relative;"></div>
+                <a href="/index.html" class="back-btn" id="editAvatarBtn" style="display: none;">Edit Avatar</a>
+                <a href="/gifts.html" class="back-btn image-btn" id="giftsBtn"><img src="https://i.postimg.cc/kXxpxwYx/gift.png" alt="Gifts" class="btn-img"></a>
+                <a href="/messages.html" class="back-btn image-btn" id="messagesBtn"><img src="https://i.postimg.cc/TY8sLB0p/chat.png" alt="Messages" class="btn-img"></a>
+                <button id="friendsBtn" class="friends-btn-top">
+                    <img src="https://i.postimg.cc/8P8YJx4z/Friendsicon.png" alt="Friends" class="friends-img">
+                </button>
+                <button id="friendRequestsBtn" class="friend-requests-btn-top">
+                    <img src="https://i.postimg.cc/J4wFDSxy/friendrequest.png" alt="Friend Requests" id="friendRequestsIcon" class="friend-requests-img">
+                    <span id="friendRequestsBadge" class="friend-requests-badge" style="display: none;">0</span>
+                </button>
+                <button id="logoutBtn" class="btn-logout">Logout</button>
+            </div>
+        </div>
+        <div style="margin: 20px 0; max-width: 500px;">
+            <input type="text" id="searchBar" placeholder="Search by username or ID..." 
+                   style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 20px; font-size: 1em;">
+            <div id="searchResults" style="display: none; margin-top: 10px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 15px; padding: 10px; max-height: 300px; overflow-y: auto;"></div>
+        </div>
+        <div id="galleryGrid" class="gallery-grid">
+            <div class="empty-gallery">Loading avatars...</div>
+        </div>
+    </div>
+    
+    <!-- Friends Modal -->
+    <div id="friendsModal" class="friends-modal" style="display: none;">
+        <div class="friends-modal-content">
+            <div class="friends-modal-header">
+                <h2 id="friendsModalTitle">My Friends</h2>
+            </div>
+            <div id="friendsList" class="friends-list">
+                <div class="empty-state">Loading friends...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Friend Requests Modal -->
+    <div id="friendRequestsModal" class="friend-requests-modal" style="display: none;">
+        <div class="friend-requests-modal-content">
+            <div class="friend-requests-modal-header">
+                <h2>Friend Requests</h2>
+            </div>
+            <div id="friendRequestsList" class="friend-requests-list">
+                <div class="empty-state">Loading friend requests...</div>
+            </div>
+        </div>
+    </div>
+    
+    <img src="https://i.postimg.cc/1RYMvqZf/cover-art.png" alt="Goofy Little Me Logo" class="small-logo">
+    <script src="theme.js"></script>
+    <script src="stickers.js"></script>
+    <script src="gallery.js"></script>
+</body>
+</html>
+

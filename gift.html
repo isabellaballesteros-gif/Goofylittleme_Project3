@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw a Gift</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container full-width">
+        <div class="header-bar">
+            <h1>Draw a Gift</h1>
+            <div class="user-info">
+                <span id="usernameDisplay"></span>
+                <a href="/gallery.html" class="back-btn">Back to Gallery</a>
+                <button id="logoutBtn" class="btn-logout">Logout</button>
+            </div>
+        </div>
+        <div class="drawing-area">
+            <div class="canvas-flex"><canvas id="canvas"></canvas></div>
+            <div class="controls">
+                <div class="tool-selector">
+                    <button id="brushTool" class="tool-btn active"><img src="https://i.postimg.cc/tRNZK2yj/pencil.png" alt="Brush" class="tool-icon"></button>
+                    <button id="eraserTool" class="tool-btn"><img src="https://i.postimg.cc/h41zkpnH/eraser.png" alt="Eraser" class="tool-icon"></button>
+                </div>
+                <div class="color-picker">
+                    <label>Color:</label>
+                    <input type="color" id="colorPicker" value="#000000">
+                </div>
+                <div class="brush-size">
+                    <label>Brush Size:</label>
+                    <input type="range" id="brushSize" min="1" max="20" value="5">
+                    <span id="brushSizeValue">5</span>
+                </div>
+                <div class="buttons">
+                    <button id="undoBtn">Undo</button>
+                    <button id="clearBtn">Clear</button>
+                    <button id="sendGiftBtn">Send Gift</button>
+                </div>
+                <div id="recipientInfo" style="padding: 15px; background: var(--card-bg); border-radius: 15px; margin-top: 15px;">
+                    <p style="margin: 0; font-weight: 600;">Sending to: <span id="recipientName"></span></p>
+                </div>
+            </div>
+        </div>
+        <div id="message" class="message"></div>
+    </div>
+    <img src="https://i.postimg.cc/1RYMvqZf/cover-art.png" alt="Goofy Little Me Logo" class="small-logo">
+    <script src="theme.js"></script>
+    <script src="stickers.js"></script>
+    <script src="gift.js"></script>
+    <script>
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('Error:', e.error);
+            const messageDiv = document.getElementById('message');
+            if (messageDiv) {
+                messageDiv.textContent = 'Error loading page. Please refresh.';
+                messageDiv.className = 'message error';
+            }
+        });
+    </script>
+</body>
+</html>
+
+

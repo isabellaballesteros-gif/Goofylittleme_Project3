@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Goofy Little Me - Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        
+        #welcomeBanner {
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+        }
+        
+        .tutorial-container {
+            max-width: 1000px;
+            width: auto;
+            margin: 0 auto;
+            background: var(--container-bg);
+            border-radius: 30px;
+            padding: 0;
+            box-shadow: 0 8px 32px var(--shadow), 0 0 0 3px var(--shadow);
+            border: 2px solid var(--border);
+            display: flex;
+            height: fit-content;
+            align-items: flex-start;
+        }
+        
+        .tutorial-sidebar {
+            width: auto;
+            min-width: 180px;
+            background: var(--card-bg);
+            border-radius: 30px 0 0 30px;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-right: 3px solid var(--border);
+            flex-shrink: 0;
+        }
+        
+        .tutorial-tab {
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--text);
+            transition: all 0.3s ease;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 1.2;
+            margin: 0;
+        }
+        
+        .tutorial-tab:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(5px);
+        }
+        
+        .tutorial-tab.active {
+            background: var(--primary);
+            color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .tutorial-content {
+            flex: 1;
+            padding: 15px 20px;
+            overflow-y: visible;
+            max-width: 750px;
+        }
+        
+        .tutorial-section {
+            display: none;
+        }
+        
+        .tutorial-section.active {
+            display: block;
+        }
+        
+        .tutorial-section h2 {
+            font-size: 1.8em;
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            margin-top: 0;
+            text-shadow: 2px 2px 0px var(--shadow);
+        }
+        
+        .tutorial-section h3 {
+            font-size: 1.3em;
+            color: var(--text);
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        
+        .tutorial-section p {
+            font-size: 1em;
+            line-height: 1.5;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        
+        .tutorial-section ul, .tutorial-section ol {
+            font-size: 1em;
+            line-height: 1.6;
+            color: var(--text);
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+        
+        .tutorial-section li {
+            margin-bottom: 4px;
+        }
+        
+        .get-started-btn {
+            background: var(--primary);
+            color: var(--primary-dark);
+            padding: 12px 30px;
+            border: 2px solid var(--border-light);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .get-started-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px var(--shadow);
+        }
+        
+        .help-item {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+        }
+        
+        .help-item h4 {
+            font-size: 1.2em;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+            margin-top: 0;
+        }
+        
+        .help-item p {
+            font-size: 1em;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div id="welcomeBanner" style="display: none; background: var(--primary); color: var(--primary-dark); padding: 20px; text-align: center; font-size: 1.3em; font-weight: 600; margin-bottom: 20px; border-radius: 15px;">
+        <h2></h2>Welcome to Goofy Little Me!</h2>
+        <span style="font-size: 0.9em;">Let's get you started on your free, interactive creative journey!</span>
+    </div>
+    <div class="tutorial-container">
+        <div class="tutorial-sidebar">
+            <button class="tutorial-tab active" data-tab="about">About Goofy Little Me</button>
+            <button class="tutorial-tab" data-tab="tutorial">Tutorial</button>
+            <button class="tutorial-tab" data-tab="help">Questions & Help</button>
+        </div>
+        <div class="tutorial-content">
+            <div id="about-section" class="tutorial-section active">
+                <h2>About Goofy Little Me</h2>
+                <p>Welcome to Goofy Little Me! A free, fun and creative social platform where you can express yourself through personalized avatar drawings. <em>This website was created by Isabella Ballesteros.</em></p>
+                
+                <h3>What is Goofy Little Me?</h3>
+                <p>Goofy Little Me is a unique social platform that combines creativity with connection. Draw your own custom avatar, share your interests, and connect with friends in a fun, artistic community!</p>
+                
+                <h3>Features</h3>
+                <ul>
+                    <li><strong>Custom Avatars:</strong> Draw your own avatar with various poses and customization options. Show your art skills, creativity, and goofiness!</li>
+                    <li><strong>Interest Drawings:</strong> Express yourself through interests!</li>
+                    <li><strong>Social Features:</strong> Add friends, send messages, and share gifts!</li>
+                    <li><strong>User Profiles:</strong> Showcase your avatar, interests, and personality and choose what color theme you want your browser to be!</li>
+                    <li><strong>Gallery:</strong> Browse and discover other users' creative avatars</li>
+                    <li><strong>Usernames and IDs:</strong> Each user gets a special 6-digit ID number and a username.</li>
+                </ul>
+                
+                <h3>Get Started</h3>
+                <p>Ready to create your goofy little self? Click the button below to start drawing your avatar! First time and don't know where to start? Click the "Tutorial" button on the top left corner of the page!</p>
+                <a href="/" class="get-started-btn">Let's Get Started!</a>
+            </div>
+            
+            <div id="tutorial-section" class="tutorial-section">
+                <h2>Tutorial</h2>
+                
+                <h3>Step 1: Create Your Account</h3>
+                <ul>
+                    <li>Click "Register" on the login page</li>
+                    <li>Enter your username, password, and email</li>
+                    <li>Remember your unique 6-digit user ID - you'll need it!</li>
+                </ul>
+                
+                <h3>Step 2: Draw Your Avatar</h3>
+                <ul>
+                    <li>Choose a pose from the 6 available options.</li>
+                    <li>Use the brush tool to draw your avatar.</li>
+                    <li>Adjust colors and brush size to your liking.</li>
+                    <li>Add a biography to tell others about yourself.</li>
+                    <li>Click "Save Avatar" when you're done.</li>
+                    <li> You can always edit your avatar later by clicking the "Edit Avatar" button on your user in gallery or in the interests drawing page. Only you can edit your user!</li>
+                    <li> When you edit your user, click the "load existing" button to load your avatar and biography from the gallery.</li>
+                </ul>
+                
+                <h3>Step 3: Create Your Interests</h3>
+                <ul>
+                    <li>Click the "Interests" button on the avatar drawing page or in your profile interest page to draw your interests.</li>
+                    <li>Choose from 12 different interest categories</li>
+                    <li>Draw or create images for each interest.</li>
+                    <li>Save each interest as you complete it.</li>
+                    <li>Set one interest as your preview to showcase on your profile.</li>
+                </ul>
+                <h3>Step 4: Explore & Connect</h3>
+                <ul>
+                    <li>Visit the Gallery to see other users' avatars.</li>
+                    <li> to find specific users, you can search by username or user ID in the search bar.</li>
+                    <li>Click on avatars to view profiles.</li>
+                    <li>Add friends by clicking the heart button on their profile.</li>
+                    <li> The four icons at the top of the gallery page are: "Gifts", "Messages", "friends", and "Friend Requests".</li>
+                    <li> "friends" icon shows you all your mutual friends and you can click on them to view their profiles.</li>
+                    <li> "Friend Requests" icon shows you all the friend requests you have received and you can click on them to accept or decline.</li>
+                    <li> "Messages" icon shows a message box where you can send messages to your mutual friends.</li>
+                    <li> "Gifts" icon shows you all the gifts you have received and you can click on them to view them. You can accept or decline gifts.</li>
+                    <li>Send messages and gifts to mutual friends only.</li> 
+                </ul>
+                <h3>Tips & Tricks</h3>
+                <ul>
+                    <li>Use the eraser tool to fix mistakes.</li>
+                    <li>You can undo actions while drawing.</li>
+                    <li>Only mutual friends can message each other.</li>
+                    <li>You can display up to 3 gifts on your profile</li>
+                    <li>Search for users by username or ID in the gallery</li>
+                </ul>
+                
+                <a href="/" class="get-started-btn">Let's Get Started!</a>
+            </div>
+            
+            <div id="help-section" class="tutorial-section">
+                <h2>Questions & Help</h2>
+                
+                <div class="help-item">
+                    <h4>How do I create my avatar?</h4>
+                    <p>After registering, you'll be taken to the drawing page. Choose a pose, use the brush tool to draw, and click "Save Avatar" when finished. You can always edit it later!</p>
+                </div>
+                
+                <div class="help-item">
+                    <h4>What is a user ID?</h4>
+                    <p>Each user gets a unique 6-digit ID number when they register. It acts as a unique identifier for your account with your username.You can use this ID to search for users in the gallery if you don't know their username. Your ID is displayed on your profile and in the gallery.</p>
+                </div>
+                
+                <div class="help-item">
+                    <h4>How do I add friends?</h4>
+                    <p>When viewing someone's profile, click the heart button to send them a friend request. Once they accept, you'll be mutual friends and can message each other.</p>
+                </div>
+                
+                <div class="help-item">
+                    <h4>Can I change my avatar?</h4>
+                    <p>Yes! You can edit your avatar at any time from the drawing page. Just make your changes and save again.</p>
+                </div>
+
+                <div class="help-item">
+                    <h4>Why can't I see my avatar when I go to edit it?</h4>
+                    <p> Make sure to click the "load existing" button to load your avatar and biography!</p>
+                </div>
+                
+                <div class="help-item">
+                    <h4>How do interests work?</h4>
+                    <p>Interests are drawings you create in and show to other users to show what you like and who your goofy self is. You are given many categories to draw and you have creative freedom to draw what you like! For example, you can draw a dragon for your pet or a castle for your dream home! You can set one interest as your "preview" to show on your profile.</p>
+                </div>
+                
+                <div class="help-item">
+                    <h4>What are gifts?</h4>
+                    <p>Gifts are drawings you can create and send to your mutual friends. You can draw your friend flowers, pizza, a car and send it to them! They will get a notification and have the option to accept or decline gifts. Users can accept as many gifts as they want and display up to 3 accepted gifts on their profile.</p>
+                </div>
+                
+                <div class="help-item">
+                    <h4>How do I search for users?</h4>
+                    <p>Use the search bar in the gallery to search by username or user ID. Click on search results to view their profiles.</p>
+                </div>
+                
+                <div class="help-item">
+                    <h4>Can I delete my account?</h4>
+                    <p>Yes, you can delete your account from the drawing page. This will remove all your data including avatars, interests, messages, and friends.</p>
+                </div>
+                
+                <a href="/" class="get-started-btn">Let's Get Started!</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check if this is a new user
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('newUser') === 'true') {
+            const welcomeBanner = document.getElementById('welcomeBanner');
+            if (welcomeBanner) {
+                welcomeBanner.style.display = 'block';
+            }
+        }
+        
+        // Tab switching
+        document.querySelectorAll('.tutorial-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                
+                // Update active tab
+                document.querySelectorAll('.tutorial-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update active section
+                document.querySelectorAll('.tutorial-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`${tabName}-section`).classList.add('active');
+            });
+        });
+    </script>
+    <img src="https://i.postimg.cc/1RYMvqZf/cover-art.png" alt="Goofy Little Me Logo" class="small-logo">
+    <script src="theme.js"></script>
+    <script src="stickers.js"></script>
+</body>
+</html>
+

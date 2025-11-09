@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Goofy Little Me</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container full-width">
+        <div class="header-bar">
+            <h1><img src="https://i.postimg.cc/Nfhn9ZDM/Drawyouravatar.png" alt="Draw Your Avatar" class="draw-header-img"></h1>
+            <div class="user-info">
+                <div id="notificationsContainer" style="position: relative;"></div>
+                <span id="usernameDisplay"></span>
+                <button id="deleteAccountBtn" class="btn-delete-account">Delete Account</button>
+                <button id="logoutBtn" class="btn-logout">Logout</button>
+            </div>
+        </div>
+        <h2 id="greetingHeading" class="greeting-heading" style="display: none;">Hello, <span id="greetingUsername"></span>!</h2>
+        <div class="drawing-area">
+            <div class="canvas-wrapper">
+                <div class="canvas-flex"><canvas id="canvas"></canvas></div>
+                <div class="biography-section">
+                    <label for="biography">Biography:</label>
+                    <textarea id="biography" rows="4" placeholder="Who is your goofy little self?..."></textarea>
+                    <button type="button" id="saveBiographyBtn" class="btn-save-bio" style="margin-top: 10px;">Save Biography</button>
+                </div>
+            </div>
+            <div class="controls-wrapper">
+                <div class="controls">
+                    <div class="pose-selector" id="poseSelector">
+                        <span class="pose-label">Choose a pose:</span>
+                        <div class="pose-list">
+                            <button class="pose-btn active" data-pose="https://i.postimg.cc/JzRC0pFc/mepose1.png">Pose 1</button>
+                            <button class="pose-btn" data-pose="https://i.postimg.cc/BnJfbmzr/mepose2.png">Pose 2</button>
+                            <button class="pose-btn" data-pose="https://i.postimg.cc/6pBxqMPD/mepose3.png">Pose 3</button>
+                            <button class="pose-btn" data-pose="https://i.postimg.cc/K8mhj0WC/mepose4.png">Pose 4</button>
+                            <button class="pose-btn" data-pose="https://i.postimg.cc/XYn6qsPQ/mepose5.png">Pose 5</button>
+                            <button class="pose-btn" data-pose="https://i.postimg.cc/8zTgcZ3g/mepose6.png">Pose 6</button>
+                        </div>
+                    </div>
+                    <div class="tool-selector">
+                        <button id="brushTool" class="tool-btn active"><img src="https://i.postimg.cc/tRNZK2yj/pencil.png" alt="Brush" class="tool-icon"></button>
+                        <button id="eraserTool" class="tool-btn"><img src="https://i.postimg.cc/h41zkpnH/eraser.png" alt="Eraser" class="tool-icon"></button>
+                    </div>
+                    <div class="color-picker">
+                        <label>Color:</label>
+                        <input type="color" id="colorPicker" value="#000000">
+                    </div>
+                    <div class="brush-size">
+                        <label>Brush Size:</label>
+                        <input type="range" id="brushSize" min="1" max="20" value="5">
+                        <span id="brushSizeValue">5</span>
+                    </div>
+                    <div class="buttons">
+                        <button id="undoBtn">Undo</button>
+                        <button id="clearBtn">Clear</button>
+                        <button id="loadBtn" style="display: none;">Load Existing</button>
+                        <button id="saveBtn">Save Avatar</button>
+                        <button id="deleteAvatarBtn" style="display: none;" class="btn-delete-avatar">Delete existing avatar</button>
+                        <button id="interestsBtn">Interests</button>
+                        <button id="galleryBtn">View Gallery</button>
+                    </div>
+                </div>
+                <a href="/tutorial.html" class="tutorial-help-btn">About Goofy Little Me and Tutorial!</a>
+            </div>
+        </div>
+        <div id="message" class="message"></div>
+    </div>
+    <img src="https://i.postimg.cc/1RYMvqZf/cover-art.png" alt="Goofy Little Me Logo" class="small-logo">
+    <script src="theme.js"></script>
+    <script src="stickers.js"></script>
+    <script src="drawing.js"></script>
+    <script>
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('Error:', e.error);
+            const messageDiv = document.getElementById('message');
+            if (messageDiv) {
+                messageDiv.textContent = 'Error loading page. Please refresh.';
+                messageDiv.className = 'message error';
+            }
+        });
+    </script>
+</body>
+</html>
+

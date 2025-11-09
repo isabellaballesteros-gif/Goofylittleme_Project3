@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goofy Little Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .profile-container { 
+            background: var(--container-bg); 
+            border-radius: 30px; 
+            padding: 40px; 
+            box-shadow: 0 8px 32px var(--shadow), 0 0 0 3px var(--shadow); 
+            max-width: 1200px; 
+            width: 100%; 
+            border: 2px solid var(--border); 
+            margin: 20px auto; 
+        }
+        .profile-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+            position: relative;
+        }
+        .profile-header h1 { 
+            font-size: 2.5em; 
+            font-weight: 800; 
+            color: var(--text); 
+            margin: 0;
+        }
+        .profile-header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .profile-main { 
+            display: grid; 
+            grid-template-columns: 1fr 1.5fr; 
+            gap: 30px; 
+            align-items: start; 
+        }
+        .profile-avatar { 
+            background: #fff; 
+            border-radius: 20px; 
+            padding: 15px; 
+            border: 3px solid var(--border); 
+            box-shadow: 0 4px 12px var(--shadow); 
+        }
+        .profile-avatar img { 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            border-radius: 12px; 
+        }
+        .profile-info { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+        }
+        .profile-username { 
+            font-size: 2.2em; 
+            font-weight: 800; 
+            color: var(--text); 
+        }
+        .profile-bio { 
+            white-space: pre-wrap; 
+            background: var(--card-bg); 
+            border: 3px solid var(--border); 
+            border-radius: 12px; 
+            padding: 20px; 
+            color: var(--text); 
+            min-height: 120px; 
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+        .profile-actions { 
+            display: flex; 
+            gap: 15px; 
+            margin-top: 10px; 
+            flex-wrap: wrap;
+        }
+        .view-interests-btn { 
+            background: var(--interests-btn); 
+            color: white; 
+            padding: 12px 24px; 
+            border: 2px solid var(--border-light); 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-size: 1.1em; 
+            font-weight: 600; 
+            text-decoration: none; 
+            display: inline-block; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 12px var(--shadow); 
+        }
+        .view-interests-btn:hover { 
+            background: var(--interests-btn-hover); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 16px var(--shadow); 
+        }
+        .message-btn, .send-gift-btn { 
+            background: var(--nav-btn); 
+            color: white; 
+            padding: 12px 24px; 
+            border: 2px solid var(--border-light); 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-size: 1.1em; 
+            font-weight: 600; 
+            text-decoration: none; 
+            display: inline-block; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 12px var(--shadow); 
+        }
+        .message-btn:hover, .send-gift-btn:hover { 
+            background: var(--nav-btn-hover); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 16px var(--shadow); 
+        }
+        .message-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .empty { 
+            color: var(--text-light); 
+            font-size: 1.2em;
+        }
+        .friend-btn {
+            background: transparent;
+            border: none;
+            font-size: 2.5em;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            padding: 0;
+            line-height: 1;
+        }
+        .friend-btn:hover {
+            transform: scale(1.2);
+        }
+        .friend-btn.active {
+            color: #ff1744;
+        }
+        .friend-btn:not(.active) {
+            color: #ccc;
+        }
+        .interest-preview {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--card-bg);
+            border: 3px solid var(--border);
+            border-radius: 12px;
+        }
+        .interest-preview h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        .interest-preview img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+        }
+        .back-btn {
+            background: var(--nav-btn);
+            color: white;
+            padding: 10px 20px;
+            border: 2px solid var(--border-light);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        .back-btn:hover {
+            background: var(--nav-btn-hover);
+            transform: translateY(-2px);
+        }
+        .theme-selector {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    </style>
+    <script>
+        let currentUsername = null;
+        let profileUsername = null;
+        let friendshipStatus = { isFriend: false, isMutual: false, canMessage: false, requestSent: false };
+        let statusMessageTimeout = null;
+
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/user');
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUsername = data.username;
+                }
+            } catch (error) {
+                currentUsername = null;
+            }
+        }
+
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        async function loadFriendshipStatus() {
+            if (!currentUsername || !profileUsername || currentUsername === profileUsername) {
+                return;
+            }
+            try {
+                const response = await fetch(`/api/friends/${encodeURIComponent(profileUsername)}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    friendshipStatus = {
+                        isFriend: data.isFriend || false,
+                        isMutual: data.isMutual || false,
+                        canMessage: data.canMessage || false,
+                        requestSent: data.isFriend || false // If you've added them, request is sent
+                    };
+                    updateFriendButton();
+                    updateMessageButton();
+                }
+            } catch (error) {
+                console.error('Error loading friendship status:', error);
+            }
+        }
+
+        async function toggleFriend() {
+            if (!currentUsername || !profileUsername || currentUsername === profileUsername) {
+                return;
+            }
+            try {
+                if (friendshipStatus.isFriend) {
+                    // Remove friend / unsend request
+                    const response = await fetch(`/api/friends/${encodeURIComponent(profileUsername)}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        friendshipStatus.isFriend = false;
+                        friendshipStatus.requestSent = false;
+                        friendshipStatus.isMutual = false;
+                        friendshipStatus.canMessage = false;
+                        updateFriendButton();
+                        updateMessageButton();
+                        showStatusMessage('Friend request unsent');
+                    }
+                } else {
+                    // Add friend / send request
+                    const response = await fetch(`/api/friends/${encodeURIComponent(profileUsername)}`, {
+                        method: 'POST'
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        friendshipStatus.isFriend = true;
+                        friendshipStatus.requestSent = true;
+                        friendshipStatus.isMutual = data.isMutual || false;
+                        friendshipStatus.canMessage = data.isMutual || false;
+                        updateFriendButton();
+                        updateMessageButton();
+                        showStatusMessage('Friend request sent');
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling friend:', error);
+            }
+        }
+        
+        function showStatusMessage(message) {
+            // Clear existing timeout
+            if (statusMessageTimeout) {
+                clearTimeout(statusMessageTimeout);
+            }
+            
+            // Find or create status message element
+            let statusMsg = document.getElementById('friendStatusMessage');
+            if (!statusMsg) {
+                statusMsg = document.createElement('div');
+                statusMsg.id = 'friendStatusMessage';
+                statusMsg.style.cssText = 'position: absolute; top: 50px; right: 0; background: var(--accent); color: white; padding: 8px 16px; border-radius: 8px; font-size: 0.9em; z-index: 1000; white-space: nowrap;';
+                const headerActions = document.querySelector('.profile-header-actions');
+                if (headerActions) {
+                    headerActions.style.position = 'relative';
+                    headerActions.appendChild(statusMsg);
+                }
+            }
+            
+            statusMsg.textContent = message;
+            statusMsg.style.display = 'block';
+            
+            // Hide after 3 seconds
+            statusMessageTimeout = setTimeout(() => {
+                statusMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        function updateFriendButton() {
+            const btn = document.getElementById('friendBtn');
+            if (btn) {
+                if (friendshipStatus.isFriend || friendshipStatus.requestSent) {
+                    // Request sent or mutual - show red heart
+                    btn.classList.add('active');
+                    btn.style.color = '#ff1744';
+                    btn.textContent = '❤️';
+                } else {
+                    // No request sent - show white heart
+                    btn.classList.remove('active');
+                    btn.style.color = '#ccc';
+                    btn.textContent = '🤍';
+                }
+            }
+        }
+
+        function updateMessageButton() {
+            const btn = document.getElementById('messageBtn');
+            if (btn) {
+                btn.disabled = !friendshipStatus.canMessage;
+                if (!friendshipStatus.canMessage) {
+                    btn.title = 'You can only message mutual friends';
+                } else {
+                    btn.title = '';
+                }
+            }
+        }
+
+        async function loadProfile() {
+            profileUsername = getQueryParam('username');
+            const container = document.getElementById('profileRoot');
+            if (!profileUsername) {
+                container.innerHTML = '<div class="empty">No user specified.</div>';
+                return;
+            }
+            
+            // Check auth first to ensure currentUsername is set
+            await checkAuth();
+            
+            // Load friendship status after auth check
+            await loadFriendshipStatus();
+            
+            try {
+                const res = await fetch(`/api/profile/${encodeURIComponent(profileUsername)}`);
+                const data = await res.json();
+                if (!res.ok) {
+                    container.innerHTML = `<div class="empty">${data.error || 'Failed to load profile'}</div>`;
+                    return;
+                }
+                const imgHtml = data.imageData ? `<img src="${data.imageData}" alt="${profileUsername}'s Avatar">` : '<div class="empty">No avatar yet.</div>';
+                const bioText = data.biography && data.biography.trim().length ? data.biography : 'No biography provided.';
+                
+                // Friend button - show for ALL users who have avatars (except yourself), as long as logged in
+                // Only show if the profile has an avatar (imageData exists)
+                const friendButtonHtml = (currentUsername && currentUsername !== profileUsername && data.imageData)
+                    ? `<button id="friendBtn" class="friend-btn" onclick="toggleFriend()">🤍</button>`
+                    : '';
+                
+                // Message button (only show if viewing someone else's profile)
+                const messageButtonHtml = currentUsername && currentUsername !== profileUsername
+                    ? `<button id="messageBtn" class="message-btn" onclick="openMessages()">Message</button>`
+                    : '';
+                
+                // Send Gift button (only for mutual friends)
+                const sendGiftButtonHtml = friendshipStatus.canMessage && profileUsername
+                    ? `<button id="sendGiftBtn" class="send-gift-btn" onclick="sendGift()">Send Gift</button>`
+                    : '';
+                
+                // Interest preview
+                let interestPreviewHtml = '';
+                if (data.previewInterestData) {
+                    const categoryNames = {
+                        'dream-house': 'Dream House',
+                        'pets': 'Pets',
+                        'food': 'Food',
+                        'car': 'Car',
+                        'drink': 'Drink',
+                        'season': 'Season',
+                        'character': 'Character',
+                        'hobby': 'Hobby',
+                        'sport': 'Sport',
+                        'music': 'Music',
+                        'job': 'Job',
+                        'time-of-day': 'Time of Day'
+                    };
+                    const categoryName = categoryNames[data.previewInterest] || data.previewInterest;
+                    interestPreviewHtml = `
+                        <div class="interest-preview">
+                            <h3>Featured Interest: ${categoryName}</h3>
+                            <img src="${data.previewInterestData}" alt="${categoryName}">
+                        </div>
+                    `;
+                }
+                
+                // Load displayed gifts
+                let displayedGiftsHtml = '';
+                try {
+                    const giftsRes = await fetch(`/api/gifts/displayed/${encodeURIComponent(profileUsername)}`);
+                    if (giftsRes.ok) {
+                        const gifts = await giftsRes.json();
+                        if (gifts.length > 0) {
+                            displayedGiftsHtml = `
+                                <div class="displayed-gifts">
+                                    <h3>Displayed Gifts (${gifts.length}/3)</h3>
+                                    <div class="gifts-grid">
+                                        ${gifts.map(gift => `
+                                            <div class="gift-display-item">
+                                                <img src="${gift.imageData}" alt="Gift from ${gift.sender}">
+                                                <div class="gift-from">From: @${gift.sender}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error loading displayed gifts:', e);
+                }
+                
+                container.innerHTML = `
+                    <div class="profile-header">
+                        <h1>User Profile</h1>
+                        <div class="profile-header-actions">
+                            ${friendButtonHtml}
+                            <a class="back-btn" href="/gallery.html">Back to Gallery</a>
+                        </div>
+                    </div>
+                    <div class="profile-main">
+                        <div class="profile-avatar">${imgHtml}</div>
+                        <div class="profile-info">
+                            <div class="profile-username">@${profileUsername}${data.userId ? ` (ID: ${data.userId})` : ''}</div>
+                            <div class="profile-bio">${bioText.replace(/</g,'&lt;')}</div>
+                            ${interestPreviewHtml}
+                            ${displayedGiftsHtml}
+                            <div class="profile-actions">
+                                <button id="viewFriendsBtn" class="view-friends-btn" onclick="openFriendsModal('${profileUsername}')">
+                                    <img src="https://i.postimg.cc/8P8YJx4z/Friendsicon.png" alt="View Friends" class="view-friends-img">
+                                    <span>View Friends</span>
+                                </button>
+                                <a class="view-interests-btn" href="/view-interests.html?username=${encodeURIComponent(profileUsername)}">View Interests</a>
+                                ${messageButtonHtml}
+                                ${sendGiftButtonHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Update buttons after rendering
+                updateFriendButton();
+                updateMessageButton();
+            } catch (e) {
+                console.error('Error loading profile:', e);
+                container.innerHTML = '<div class="empty">Error loading profile.</div>';
+            }
+        }
+
+        function openMessages() {
+            if (friendshipStatus.canMessage && profileUsername) {
+                window.location.href = `/messages.html?username=${encodeURIComponent(profileUsername)}`;
+            }
+        }
+        
+        function sendGift() {
+            if (friendshipStatus.canMessage && profileUsername) {
+                window.location.href = `/gift.html?to=${encodeURIComponent(profileUsername)}`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadProfile);
+    </script>
+</head>
+<body>
+    <div class="profile-container" id="profileRoot">
+        <div class="empty">Loading profile...</div>
+    </div>
+    
+    <!-- Friends Modal -->
+    <div id="friendsModal" class="friends-modal" style="display: none;">
+        <div class="friends-modal-content">
+            <div class="friends-modal-header">
+                <h2 id="friendsModalTitle">Friends</h2>
+            </div>
+            <div id="friendsList" class="friends-list">
+                <div class="empty-state">Loading friends...</div>
+            </div>
+        </div>
+    </div>
+    
+    <img src="https://i.postimg.cc/1RYMvqZf/cover-art.png" alt="Goofy Little Me Logo" class="small-logo">
+    <script src="theme.js"></script>
+    <script src="stickers.js"></script>
+    <script>
+        // Friends modal functions
+        async function openFriendsModal(username) {
+            const modal = document.getElementById('friendsModal');
+            const title = document.getElementById('friendsModalTitle');
+            const list = document.getElementById('friendsList');
+            
+            if (!username) {
+                // Get current user if no username provided
+                try {
+                    const response = await fetch('/api/user');
+                    if (response.ok) {
+                        const data = await response.json();
+                        username = data.username;
+                    }
+                } catch (error) {
+                    console.error('Error getting current user:', error);
+                }
+            }
+            
+            if (!username) {
+                list.innerHTML = '<div class="empty-state">Please log in to view friends</div>';
+                modal.style.display = 'flex';
+                return;
+            }
+            
+            title.textContent = `@${username}'s Friends`;
+            list.innerHTML = '<div class="empty-state">Loading friends...</div>';
+            modal.style.display = 'flex';
+            
+            try {
+                const response = await fetch(`/api/friends/list/${encodeURIComponent(username)}`);
+                if (response.ok) {
+                    const friends = await response.json();
+                    
+                    if (friends.length === 0) {
+                        list.innerHTML = '<div class="empty-state">No friends yet</div>';
+                        return;
+                    }
+                    
+                    list.innerHTML = friends.map(friend => {
+                        const avatarImg = friend.avatar 
+                            ? `<img src="${friend.avatar}" alt="${friend.username}" class="friend-avatar">`
+                            : `<div class="friend-avatar" style="background: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 1.5em;">👤</div>`;
+                        
+                        const userIdText = friend.userId ? ` (ID: ${friend.userId})` : '';
+                        
+                        return `
+                            <div class="friend-item" onclick="window.location.href='/profile.html?username=${encodeURIComponent(friend.username)}'">
+                                ${avatarImg}
+                                <div class="friend-info">
+                                    <a href="/profile.html?username=${encodeURIComponent(friend.username)}" class="friend-username">@${friend.username}${userIdText}</a>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else if (response.status === 404) {
+                    // User not found
+                    list.innerHTML = '<div class="empty-state">User not found</div>';
+                } else {
+                    // Other error
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error('Error loading friends:', response.status, errorData);
+                    list.innerHTML = '<div class="empty-state">Unable to load friends. Please try again later.</div>';
+                }
+            } catch (error) {
+                console.error('Error loading friends:', error);
+                list.innerHTML = '<div class="empty-state">Unable to load friends. Please check your connection and try again.</div>';
+            }
+        }
+        
+        function closeFriendsModal() {
+            const modal = document.getElementById('friendsModal');
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('friendsModal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeFriendsModal();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

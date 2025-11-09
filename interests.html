@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Interests - Avatar Drawing</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="interests-page-container">
+        <div class="interests-sidebar">
+            <div class="sidebar-header">
+                <h2>My Interests</h2>
+                <div class="user-info">
+                    <span id="usernameDisplay"></span>
+                </div>
+            </div>
+            <div class="category-list">
+                <button class="category-item active" data-category="dream-house">
+                    <span class="category-name">Dream House</span>
+                </button>
+                <button class="category-item" data-category="pets">
+                    <span class="category-name">Pets</span>
+                </button>
+                <button class="category-item" data-category="food">
+                    <span class="category-name">Food</span>
+                </button>
+                <button class="category-item" data-category="car">
+                    <span class="category-name">Car</span>
+                </button>
+                <button class="category-item" data-category="drink">
+                    <span class="category-name">Drink</span>
+                </button>
+                <button class="category-item" data-category="season">
+                    <span class="category-name">Season</span>
+                </button>
+                <button class="category-item" data-category="character">
+                    <span class="category-name">Character</span>
+                </button>
+                <button class="category-item" data-category="hobby">
+                    <span class="category-name">Hobby</span>
+                </button>
+                <button class="category-item" data-category="sport">
+                    <span class="category-name">Sport</span>
+                </button>
+                <button class="category-item" data-category="music">
+                    <span class="category-name">Music</span>
+                </button>
+                <button class="category-item" data-category="job">
+                    <span class="category-name">Job</span>
+                </button>
+                <button class="category-item" data-category="time-of-day">
+                    <span class="category-name">Time of Day</span>
+                </button>
+            </div>
+            <div class="sidebar-footer">
+                <a href="/profile.html" id="backToProfileBtn" class="back-btn">Back to Profile</a>
+                <a href="/gallery.html" class="back-btn">Back to Gallery</a>
+                <a href="/index.html" class="back-btn edit-avatar-btn">Edit Avatar</a>
+                <button id="logoutBtn" class="btn-logout">Logout</button>
+            </div>
+        </div>
+        
+        <div class="interests-main">
+            <div class="canvas-header">
+                <h3 id="currentCategoryTitle">Dream House</h3>
+                <div class="canvas-controls-header">
+                    <div class="tool-selector">
+                        <button id="brushTool" class="tool-btn active"><img src="https://i.postimg.cc/tRNZK2yj/pencil.png" alt="Brush" class="tool-icon"></button>
+                        <button id="eraserTool" class="tool-btn"><img src="https://i.postimg.cc/h41zkpnH/eraser.png" alt="Eraser" class="tool-icon"></button>
+                    </div>
+                    <div class="color-picker-control">
+                        <label>Color:</label>
+                        <input type="color" id="colorPicker" value="#000000">
+                    </div>
+                    <div class="brush-size-control">
+                        <label>Size:</label>
+                        <input type="range" id="brushSize" min="1" max="20" value="5">
+                        <span id="brushSizeValue">5</span>
+                    </div>
+                    <button id="clearBtn" class="control-btn">Clear</button>
+                    <button id="saveBtn" class="control-btn save-btn">Save</button>
+                    <button id="setPreviewBtn" class="control-btn preview-btn" style="display: none;">Set as Preview</button>
+                </div>
+            </div>
+            <div class="canvas-container">
+                <canvas id="interestCanvas"></canvas>
+            </div>
+            <div id="message" class="message"></div>
+        </div>
+    </div>
+    <img src="https://i.postimg.cc/1RYMvqZf/cover-art.png" alt="Goofy Little Me Logo" class="small-logo">
+    <script src="theme.js"></script>
+    <script src="stickers.js"></script>
+    <script src="interests.js"></script>
+</body>
+</html>

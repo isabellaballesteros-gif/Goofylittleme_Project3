@@ -1,0 +1,17 @@
+node_modules/
+avatars/
+users/
+interests/
+gifts/
+messages/
+users.json
+gifts.json
+*.log
+.DS_Store
+.env
+.env.local
+.env.production
+Thumbs.db
+.vscode/
+.idea/
+

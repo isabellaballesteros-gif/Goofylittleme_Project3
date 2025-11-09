@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Gifts</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .gifts-container {
+            background: var(--container-bg);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 8px 32px var(--shadow), 0 0 0 3px var(--shadow);
+            max-width: 1200px;
+            width: 100%;
+            border: 2px solid var(--border);
+            margin: 20px auto;
+        }
+        .gifts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .gifts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .gift-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            border: 2px solid var(--border);
+            box-shadow: 0 4px 12px var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .gift-image {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+        .gift-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .gift-sender {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .gift-status {
+            font-size: 0.9em;
+            color: var(--text-light);
+        }
+        .gift-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .gift-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .accept-btn {
+            background: var(--secondary);
+            color: white;
+        }
+        .accept-btn:hover {
+            background: var(--secondary-hover);
+        }
+        .decline-btn {
+            background: var(--danger);
+            color: white;
+        }
+        .decline-btn:hover {
+            background: var(--danger-hover);
+        }
+        .display-toggle-btn {
+            background: var(--accent2);
+            color: white;
+        }
+        .display-toggle-btn:hover {
+            background: var(--accent2-hover);
+        }
+        .display-toggle-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="gifts-container">
+        <div class="gifts-header">
+            <h1>My Gifts</h1>
+            <a href="/gallery.html" class="back-btn">Back to Gallery</a>
+        </div>
+        <div id="giftsList" class="gifts-grid">
+            <div class="empty-state">Loading gifts...</div>
+        </div>
+    </div>
+    <script src="theme.js"></script>
+    <script>
+        let currentUsername = null;
+        
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/user');
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUsername = data.username;
+                    loadGifts();
+                } else {
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                window.location.href = '/login.html';
+            }
+        }
+        
+        async function loadGifts() {
+            const list = document.getElementById('giftsList');
+            try {
+                const response = await fetch('/api/gifts/received');
+                if (response.ok) {
+                    const gifts = await response.json();
+                    // Filter out declined gifts - they should not appear
+                    const visibleGifts = gifts.filter(gift => gift.status !== 'declined');
+                    displayGifts(visibleGifts);
+                } else {
+                    const data = await response.json();
+                    list.innerHTML = `<div class="empty-state">${data.error || 'Error loading gifts. Please try again.'}</div>`;
+                }
+            } catch (error) {
+                console.error('Error loading gifts:', error);
+                const list = document.getElementById('giftsList');
+                if (list) {
+                    list.innerHTML = '<div class="empty-state">Error loading gifts. Please check your connection and try again.</div>';
+                }
+            }
+        }
+        
+        function displayGifts(gifts) {
+            const list = document.getElementById('giftsList');
+            if (gifts.length === 0) {
+                list.innerHTML = '<div class="empty-state">No gifts received yet</div>';
+                return;
+            }
+            
+            // Count currently displayed gifts to enforce 3-gift limit
+            const displayedCount = gifts.filter(g => g.status === 'accepted' && g.displayed === true).length;
+            
+            list.innerHTML = gifts.map(gift => {
+                const imageSrc = gift.imageData || '';
+                const isAtLimit = displayedCount >= 3 && !gift.displayed;
+                
+                return `
+                <div class="gift-item">
+                    ${imageSrc ? `<img src="${imageSrc}" alt="Gift" class="gift-image">` : '<div class="gift-image" style="display: flex; align-items: center; justify-content: center; color: var(--text-light);">No image</div>'}
+                    <div class="gift-info">
+                        <div class="gift-sender">From: @${gift.sender}</div>
+                        <div class="gift-status">Status: ${gift.status}</div>
+                        ${gift.status === 'pending' ? `
+                            <div class="gift-actions">
+                                <button class="gift-btn accept-btn" onclick="acceptGift('${gift.id}')">Accept</button>
+                                <button class="gift-btn decline-btn" onclick="declineGift('${gift.id}')">Decline</button>
+                            </div>
+                        ` : gift.status === 'accepted' ? `
+                            <div class="gift-actions">
+                                ${isAtLimit ? `
+                                    <div style="font-size: 0.85em; color: var(--text-light); margin-bottom: 8px; text-align: center;">
+                                        Maximum of 3 gifts can be displayed on profile
+                                    </div>
+                                ` : ''}
+                                <button class="gift-btn display-toggle-btn ${gift.displayed ? 'active' : ''}" 
+                                        onclick="toggleDisplay('${gift.id}', ${!gift.displayed})"
+                                        ${isAtLimit && !gift.displayed ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                                    ${gift.displayed ? 'Hide from Profile' : 'Display on Profile'}
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+        
+        async function acceptGift(giftId) {
+            try {
+                const response = await fetch(`/api/gifts/${giftId}/accept`, {
+                    method: 'POST'
+                });
+                if (response.ok) {
+                    loadGifts();
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Failed to accept gift');
+                }
+            } catch (error) {
+                console.error('Error accepting gift:', error);
+                alert('Failed to accept gift');
+            }
+        }
+        
+        async function declineGift(giftId) {
+            try {
+                const response = await fetch(`/api/gifts/${giftId}/decline`, {
+                    method: 'POST'
+                });
+                if (response.ok) {
+                    loadGifts();
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Failed to decline gift');
+                }
+            } catch (error) {
+                console.error('Error declining gift:', error);
+                alert('Failed to decline gift');
+            }
+        }
+        
+        async function toggleDisplay(giftId, displayed) {
+            try {
+                const response = await fetch(`/api/gifts/${giftId}/display`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ displayed })
+                });
+                if (response.ok) {
+                    loadGifts();
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Failed to update display');
+                }
+            } catch (error) {
+                console.error('Error toggling display:', error);
+                alert('Failed to update display');
+            }
+        }
+        
+        checkAuth();
+    </script>
+    <img src="https://i.postimg.cc/1RYMvqZf/cover-art.png" alt="Goofy Little Me Logo" class="small-logo">
+    <script src="theme.js"></script>
+    <script src="stickers.js"></script>
+</body>
+</html>
+
+
